@@ -116,16 +116,16 @@ export default function Dashboard(){
     {/*backedn */}
     <div className=" flex gap-2 border-[1px] border-gray-400 h-16 w-72 ml-3.5 mt-3 rounded">
      <div className="border-r-[1px] w-24  text-center border-gray-400">
-<p className="font-medium text-white">CAMERA</p>
+<p className="font-medium text-white mr-1 mt-1">CAMERA</p>
 <p className="text-emerald-700 font-medium">Online</p>
      </div>
      <div className="border-r-[1px] text-center w-24 border-gray-400">
-<p className="font-medium text-white">CAMERA</p>
-<p className="text-emerald-700 font-medium">Online</p>
+<p className="font-medium text-white mr-1 mt-1">AI Model</p>
+<p className="text-emerald-700 font-medium mr-1">Active</p>
      </div>
           <div className="border-r-[1px] text-center w-24 border-gray-400">
-<p className="font-medium text-white">CAMERA</p>
-<p className="text-emerald-700 font-medium">Online</p>
+<p className="font-medium text-white mr-1 mt-1">Notifcaions</p>
+<p className="text-emerald-700 font-medium mr-1">Enabelds</p>
      </div>
     </div>
     </div>

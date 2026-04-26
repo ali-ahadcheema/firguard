@@ -2,7 +2,8 @@ import { Link, Routes, Route, BrowserRouter } from 'react-router-dom'
 import{FaHome,FaCamera,FaHistory,FaUser,FaCog}from"react-icons/fa"
 import Dashboard from './dashboard.jsx'
 import Signup from './signup.jsx'
-import Login from './login.jsx';
+import Login from './login.jsx'
+import Capture from './capture.jsx'
 function App() {
   return (
     <BrowserRouter> 
@@ -50,6 +51,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
+            <Route path='/camera' element={<Capture/>}/>
           </Routes>
         </div>
 
