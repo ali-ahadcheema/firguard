@@ -1,5 +1,7 @@
 import { useState,useRef, useCallback, useEffect } from "react";
+import { db } from "./firebase";
 import Webcam from "react-webcam";
+import { push, ref } from "firebase/database";
 
 export default function Capture(){
     const webcamref=useRef(null);
@@ -8,23 +10,21 @@ export default function Capture(){
     const[devices,setdevice]=useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
 
-
-    {/*auto detect camera*/}
-  useEffect(()=>{
-    navigator.mediaDevices.enumerateDevices().then((d)=>{
-      const cameras=d.filter((device)=>device.kind==="videoinput");
-      setdevice(cameras);
-      const droid=cameras.find((camera)=>camera.label.toLocaleLowerCase().includes("droid"));
-      if(droid){
-  setSelectedDevice(droid.deviceId);}
-  else{
-setSelectedDevice(cameras[0]?.deviceId);
-  }
-      }
-    )
-  },[])
-
-
+ useEffect(()=>{
+  navigator.mediaDevices.enumerateDevices().then((devices)=>{
+    const videoref=devices.filter((device)=>device.kind==="videoinput");
+    setdevice(videoref);
+    if(videoref.length>0){
+      setSelectedDevice(videoref[0].deviceId);
+    }
+  })
+ },[])
+ 
+const videoConstraints = {
+  deviceId: selectedDevice,
+  width: 1280,
+  height: 720,
+};
     const capture=useCallback(()=>{
         if (!webcamref.current) return;
         const imgsrc=webcamref.current.getScreenshot();
@@ -41,7 +41,19 @@ setSelectedDevice(cameras[0]?.deviceId);
         a.click();
     }
 
-  
+   const savedata=async(curentdata)=>{
+  try{
+    await push(ref(db,"detections"),{
+      status:curentdata,
+      time:new Date().toLocaleDateString(),
+    })
+    console.log("data save")
+  }
+  catch(error){
+    console.log(error)
+  }
+ }
+
 
  const detction=async(imgsrc)=>{
   
@@ -52,10 +64,10 @@ setSelectedDevice(cameras[0]?.deviceId);
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: imgsrc.split(",")[1], // ✅ send image
+    body: imgsrc.split(",")[1], 
   }
 );
-
+let firedetec=false;
     const data=await respo.json();
     console.log(data);
     if (data.predictions.length > 0) {
@@ -64,19 +76,43 @@ setSelectedDevice(cameras[0]?.deviceId);
 
     if (p.class === "fire") {
       setstatus("🔥 Fire Detected");
+      savedata("fire detected")
     }
   });
 } else {
   setstatus("✅ Safe");
+  savedata("safe")
 }
  }
+ console.log(devices);
 
 
     return(
         <>
         <div className="h-full w-full">
 <h1 className="text-2xl">webcam photo</h1>
-{img?<img className="w-full mt-10  h-60" src={img} alt="picture"></img>:<Webcam ref={webcamref} className="w-56 h-52 ml-80 border-0 rounded "></Webcam>}
+<select
+  onChange={(e) => setSelectedDevice(e.target.value)}
+  className="mt-4"
+>
+  {devices.map((device, index) => (
+    <option key={device.deviceId} value={device.deviceId}>
+      {device.label || `Camera ${index + 1}`}
+    </option>
+  ))}
+</select>
+ {img ? (
+        <img className="w-full mt-10 h-60" src={img} alt="capture" />
+      ) : (
+        // ✅ videoConstraints now actually passed in
+        selectedDevice && (
+          <Webcam
+            ref={webcamref}
+            videoConstraints={videoConstraints}
+            className="w-56 h-52 ml-80 border-0 rounded"
+          />
+        )
+      )}
      <div className=" flex ml-96 gap-2 mt-10" >
         {img ? (
           <>

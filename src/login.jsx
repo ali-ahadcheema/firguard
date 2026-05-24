@@ -26,7 +26,7 @@ const handelogin=(e)=>{
              <h1 className="font-bold text-white mt-5 ml-4">Please Log in</h1>
             <input className="h-6 w-72 border-[1px]  border-gray-400 rounded mt-4 ml-4" type='email' placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}></input>
             <input className="h-6 w-72 border-[1px] border-gray-400 rounded ml-4 mt-4" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
-              <button className="bg-[#0F172A] text-white font-medium py-2 px-4 rounded mt-5 ml-30  " type="submit" onClick={handelogin}>log in</button>
+              <button className="bg-[#0F172A] text-white font-medium py-2 px-4 rounded mt-5 ml-30  " type="submit">log in</button>
            </form>
         </div>
        </div>
