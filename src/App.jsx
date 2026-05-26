@@ -12,7 +12,7 @@ function App() {
       <div className="grid grid-cols-12 bg-[#0F172A] min-h-screen ">
 
         {/* Sidebar */}
-        <div className="col-span-2 border-r-[0.5px]   top-0 h-full bg-[#111827] border-gray-200 ">
+        <div className="col-span-2 border-r-[0.5px] fixed ml-5  top-0 h-full bg-[#111827] border-gray-200 ">
           <div className='flex flex-col h-full  justify-evenly gap-40 items-center'>
             <div>
           <div className="flex gap-2 mr-3 mb-6">
@@ -45,7 +45,7 @@ function App() {
         </div>
 
         {/* Main Content */}
-        <div className="col-span-10 p-6   text-white">
+        <div className="col-span-10 p-6 ml-50  text-white">
         
     <Routes>
        <Route path="/" element={<Dashboard />} />
