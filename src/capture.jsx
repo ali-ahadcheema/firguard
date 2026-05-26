@@ -10,6 +10,14 @@ export default function Capture(){
     const[devices,setdevice]=useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
 
+const alarmref=useRef(null)
+
+useEffect(()=>{
+  alarmref.current=new Audio("/alarm.mp3")
+  alarmref.current.loop=true
+},[])
+
+
  useEffect(()=>{
   navigator.mediaDevices.enumerateDevices().then((devices)=>{
     const videoref=devices.filter((device)=>device.kind==="videoinput");
@@ -32,7 +40,13 @@ const videoConstraints = {
         detction(imgsrc);
     },[]);
 
-    const retake=()=>setimg(null);
+    const retake=()=>{
+      setimg(null);
+      if(alarmref.current){
+        alarmref.current.pause()
+        alarmref.current.currenTime=0;
+      }
+    }
 
     const download=()=>{
         const a=document.createElement('a');
@@ -40,8 +54,83 @@ const videoConstraints = {
         a.download="capture.png";
         a.click();
     }
+const detction = async (imgsrc) => {
+  try {
+    setstatus("Detecting...");
 
-   const savedata=async(curentdata)=>{
+    const response = await fetch(
+      "https://serverless.roboflow.com/firedetection-upd0y/1?api_key=eXMBcRLq4skpw7JJVz27",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: imgsrc.split(",")[1],
+      }
+    );
+
+    const data = await response.json();
+
+    console.log(data);
+
+    let fireFound = false;
+    let smokeFound = false;
+
+    if (data.predictions && data.predictions.length > 0) {
+      data.predictions.forEach((p) => {
+        console.log(p.class, p.confidence);
+
+        if (p.class.toLowerCase() === "fire") {
+          fireFound = true;
+        }
+
+        if (p.class.toLowerCase() === "smoke") {
+          smokeFound = true;
+        }
+      });
+
+      if (fireFound) {
+        setstatus("🔥 Fire Detected");
+        savedata("fire detected");
+
+        if(alarmref.current){
+          alarmref.current.currenTime=0;
+          alarmref.current.play()
+          setTimeout(() => {
+            alarmref.current.pause();
+            alarmref.current.currenTime=0
+          }, 20000);
+        }
+       
+
+      } 
+      else if (smokeFound) {
+        setstatus("💨 Smoke Detected");
+        savedata("smoke detected");
+      } 
+      else {
+        setstatus("⚠ Object Detected");
+        savedata("object detected");
+      }
+
+    } else {
+      setstatus("✅ Safe");
+      savedata("safe");
+      if(alarmref.current){
+        alarmref.current.pause()
+        alarmref.current.currenTime=0;
+      }
+    }
+
+  } catch (error) {
+    console.log(error);
+    setstatus("❌ Detection Failed");
+  }
+};
+
+ console.log(devices);
+
+ const savedata=async(curentdata)=>{
   try{
     await push(ref(db,"detections"),{
       status:curentdata,
@@ -53,40 +142,6 @@ const videoConstraints = {
     console.log(error)
   }
  }
-
-
- const detction=async(imgsrc)=>{
-  
-      const respo = await fetch(
-  "https://detect.roboflow.com/fire-and-smoke-detection-ztqae/1?api_key=eXMBcRLq4skpw7JJVz27",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: imgsrc.split(",")[1], 
-  }
-);
-let firedetec=false;
-    const data=await respo.json();
-    console.log(data);
-    if (data.predictions.length > 0) {
-  data.predictions.forEach((p) => {
-    console.log(p.class, p.confidence);
-
-    if (p.class === "fire") {
-      setstatus("🔥 Fire Detected");
-      savedata("fire detected")
-    }
-  });
-} else {
-  setstatus("✅ Safe");
-  savedata("safe")
-}
- }
- console.log(devices);
-
-
     return(
         <>
         <div className="h-full w-full">
@@ -123,7 +178,7 @@ let firedetec=false;
           <button className="bg-red-700 text-white font-medium h-8 w-28 border-0 rounded cursor-pointer" onClick={capture}>Take picture</button>
         )}
       </div>
-      <h className="text-xl font-bold mt-4">Current Situation</h>
+      <h1 className="text-xl font-bold mt-4">Current Situation</h1>
       <p className="mt-5">{status}</p>
         </div>
         </>

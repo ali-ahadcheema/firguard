@@ -4,6 +4,7 @@ import Dashboard from './dashboard.jsx'
 import Signup from './signup.jsx'
 import Login from './login.jsx'
 import Capture from './capture.jsx'
+import ShowData from './history.jsx'
 function App() {
   return (
     <BrowserRouter> 
@@ -52,6 +53,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path='/camera' element={<Capture/>}/>
+            <Route path='/history' element={<ShowData/>}></Route>
           </Routes>
         </div>
 
