@@ -11,7 +11,7 @@ export default function Capture() {
   const [img, setimg] = useState(null);
   const [status, setstatus] = useState("Loading...");
 
-  // Alarm setup
+  
   useEffect(() => {
 
     alarmref.current = new Audio("/alarm.mp3");
@@ -26,7 +26,7 @@ export default function Capture() {
   };
 
   
-  const capture = useCallback(() => {
+  const capture =useCallback(() => {
 
     if (!webcamref.current) return;
 
@@ -38,24 +38,17 @@ export default function Capture() {
 
     detction(imgsrc);
 
-  }, []);
+  })
 
  
+useEffect(()=>{
+  const interval=setInterval(() => {
+    capture()
+  }, 10000);
+  return()=> clearInterval(interval)
+},[capture])
 
 
-useEffect(() => {
-
-  const interval = setInterval(() => {
-
-    if (webcamref.current) {
-      capture();
-    }
-
-  }, 15000);
-
-  return () => clearInterval(interval);
-
-}, [capture]);
 
 
  

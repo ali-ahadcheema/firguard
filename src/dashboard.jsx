@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaBell,FaHamburger,FaFire,FaChevronUp,FaRunning,FaStopCircle,FaPhone } from "react-icons/fa";
 import { ShieldCheck,AlertTriangle,Upload,Play, } from "lucide-react";
 import {Flame} from "lucide-react"
-import { useContext } from "react";
+import { useContext,useCallback } from "react";
 import { DataContext } from "./datacontext";
 import { useNavigate } from "react-router-dom";
 import Capture from "./capture";
@@ -16,7 +16,9 @@ const usenavi=useNavigate();
 const fire=data.filter(item=>item.status==="fire detected").length
 const  safe=data.filter(item=>item.status==="safe").length
 const  total=data.length
-    
+
+  const fireratio=Math.floor((fire/total)*100)
+const saferatio=Math.floor((safe/total)*100)
     return(
         <>
         {/*second nav*/}
@@ -39,11 +41,11 @@ const  total=data.length
     </div>
       <div className=" flex items-center gap-2  bg-[#1F2937] h-24 w-72 border-[1px] border-[#374151] rounded-lg">
  <AlertTriangle size={18} color="white" className="bg-red-600 h-12 w-12 border-0 rounded-full ml-4"/>
-<p className="text-sm"><span className="font-medium text-white">Fire Detected</span><br/><span className="text-3xl text-red-600">{fire}</span><br/><span className="text-red-600 flex items-center gap-1"><FaChevronUp size={16} color="red"/> 12% <span className="text-white">from last week</span> </span></p>
+<p className="text-sm"><span className="font-medium text-white">Fire Detected</span><br/><span className="text-3xl text-red-600">{fire}</span><br/><span className="text-red-600 flex items-center gap-1"><FaChevronUp size={16} color="red"/> {fireratio}% <span className="text-white">from last week</span> </span></p>
     </div>
       <div className=" flex items-center gap-2  bg-[#1F2937] h-24 w-72 border-[1px] border-[#374151] rounded-lg">
 <ShieldCheck size={24} color="white" className="bg-emerald-700 h-12 w-12 border-0 rounded-full ml-4"/>
-<p className="text-sm"><span className="font-medium text-white">Safe Scans</span><br/><span className="text-3xl text-emerald-700">{safe}</span><br/><span className="text-emerald-700 flex items-center gap-1"><FaChevronUp size={16} color="emerald"/> 12% <span className="text-white">from last week</span> </span></p>
+<p className="text-sm"><span className="font-medium text-white">Safe Scans</span><br/><span className="text-3xl text-emerald-700">{safe}</span><br/><span className="text-emerald-700 flex items-center gap-1"><FaChevronUp size={16} color="emerald"/> {saferatio}% <span className="text-white">from last week</span> </span></p>
     </div>
 </div>
 
@@ -55,8 +57,8 @@ const  total=data.length
     <p className="font-medium text-white">Live Detecteion</p>
     <p className="text-red-500">Live</p>
 </div>
-<img className="h-36 w-96 border-0 rounded ml-15 mt-2" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv7MO6GmOypVwyo48h8Za97ChdfJjaBwB3pg&s"></img>
-<div className="flex items-center gap-1.5 mt-4 ml-15">
+<img className="h-36 w-96 border-0 rounded ml-8 mt-2" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv7MO6GmOypVwyo48h8Za97ChdfJjaBwB3pg&s"></img>
+<div className="flex items-center gap-1.5 mt-4 ml-8">
     <button className="bg-red-500 h-8 w-48 text-white border-0 rounded ">Stop detection</button>
 <button onClick={()=>usenavi("/camera")} className="bg-[#0F172A] justify-center h-8 w-48 flex items-center gap-1.5 text-white border-0 rounded cursor-pointer">
   <Upload size={16} color="white" /> Upload image
@@ -86,11 +88,11 @@ const  total=data.length
 </div>
 <div className="flex ml-8 gap-3 mt-3">
     <div className=" bg-[#1F2937] h-48 w-lg border-0 rounded-lg">
-        <div className="flex justify-around">
+        <div className="flex justify-around ">
       <p className="font-medium text-white">SAFETY INSTRUCTIONS</p>
       <p className="font-medium text-red-700">VIEW ALL</p>
     </div>
-    <div className="flex gap-7 justify-center  mt-1">
+    <div className="flex gap-5 justify-center  mt-1">
        <div className="bg-[#0F172A] flex flex-wrap justify-center items-center border-0 rounded h-40 w-32 transition duration-150 ease-in-out hover:scale-105 cursor-pointer">
 <FaRunning size={20} color="white" className="bg-emerald-700 h-12 w-12 border-0 rounded-full mt-2"/>
 <p className="font-medium text-white">STAY CALM</p>
@@ -120,7 +122,7 @@ const  total=data.length
     </div>
 
     {/*backedn */}
-    <div className=" flex gap-2 border-[1px] border-gray-400 h-16 w-72 ml-3.5 mt-3 rounded">
+    <div className=" flex gap-2 border-[1px] border-gray-400 h-16 w-72  mt-5 rounded">
      <div className="border-r-[1px] w-24  text-center border-gray-400">
 <p className="font-medium text-white mr-1 mt-1">CAMERA</p>
 <p className="text-emerald-700 font-medium">Online</p>

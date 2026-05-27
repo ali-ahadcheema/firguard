@@ -45,7 +45,7 @@ function App() {
         </div>
 
         {/* Main Content */}
-        <div className="col-span-10 p-6 ml-50  text-white">
+        <div className="col-span-10 p-6 ml-60  text-white">
         
     <Routes>
        <Route path="/" element={<Dashboard />} />
