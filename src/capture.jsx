@@ -45,7 +45,7 @@ export default function Capture() {
 useEffect(()=>{
   const interval=setInterval(() => {
     capture()
-  }, 10000);
+  }, 8000);
   return()=> clearInterval(interval)
 },[capture])
 
@@ -116,10 +116,9 @@ useEffect(()=>{
 
         });
 
-        // Fire
         if (fireFound) {
 
-          setstatus("🔥 Fire Detected");
+          setstatus(" Fire Detected");
 
           savedata("fire detected");
 
@@ -140,18 +139,18 @@ useEffect(()=>{
 
         }
 
-        // Smoke
+      
         else if (smokeFound) {
 
-          setstatus("💨 Smoke Detected");
+          setstatus(" Smoke Detected");
 
           savedata("smoke detected");
         }
 
-        // Other object
+       
         else {
 
-          setstatus("⚠ Object Detected");
+          setstatus(" Object Detected");
 
           savedata("object detected");
         }
@@ -179,7 +178,7 @@ useEffect(()=>{
 
       console.log(error);
 
-      setstatus("❌ Detection Failed");
+      setstatus(" Detection Failed");
     }
   };
 
@@ -219,7 +218,7 @@ const user=auth.currentUser
   videoConstraints={videoConstraints}
   onUserMediaError={(err) => {
     console.log(err);
-    setstatus("❌ Camera Error");
+    setstatus(" Camera Error");
   }}
   className="w-96 h-72 mt-6 rounded-lg"
 />
