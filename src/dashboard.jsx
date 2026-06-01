@@ -12,7 +12,7 @@ import Capture from "./capture";
 export default function Dashboard({children}){
 const {data}=useContext(DataContext);
 const usenavi=useNavigate();
-
+console.log("DATA FROM CONTEXT:", data);
 const fire=data.filter(item=>item.status==="fire detected").length
 const  safe=data.filter(item=>item.status==="safe").length
 const  total=data.length

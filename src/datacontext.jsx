@@ -1,37 +1,50 @@
 import { createContext, useEffect, useState } from "react";
 import { db } from "./firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ref, onValue } from "firebase/database";
 
-export const DataContext=createContext();
+export const DataContext = createContext();
 
-export default function DataProvider({children}){
+export default function DataProvider({ children }) {
+  const [data, setdata] = useState([]);
 
-    const [data,setdata]=useState([]);
+  useEffect(() => {
+    const auth = getAuth();
 
-    useEffect(()=>{
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log("AUTH USER:", user);
 
-        const dbref=ref(db,"detections");
+      if (!user) {
+        setdata([]);
+        return;
+      }
 
-        onValue(dbref,(snapshot)=>{
+      const dbref = ref(db, `detections/${user.uid}`);
 
-            const value=snapshot.val();
+      onValue(dbref, (snapshot) => {
+        const value = snapshot.val();
 
-            if(value){
+        console.log("SNAPSHOT:", value);
 
-                const arr=Object.keys(value).map((key)=>({
-                    id:key,
-                    ...value[key]
-                }));
+        if (value) {
+          const arr = Object.keys(value).map((key) => ({
+            id: key,
+            ...value[key],
+          }));
 
-                setdata(arr);
-            }
-        });
+          setdata(arr);
+        } else {
+          setdata([]);
+        }
+      });
+    });
 
-    },[]);
+    return () => unsubscribe();
+  }, []);
 
-    return(
-        <DataContext.Provider value={{data}}>
-            {children}
-        </DataContext.Provider>
-    )
+  return (
+    <DataContext.Provider value={{ data }}>
+      {children}
+    </DataContext.Provider>
+  );
 }

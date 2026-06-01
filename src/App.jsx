@@ -5,7 +5,19 @@ import Signup from './signup.jsx'
 import Login from './login.jsx'
 import Capture from './capture.jsx'
 import ShowData from './history.jsx'
+import { getAuth,signOut } from 'firebase/auth'
+
 function App() {
+const auth=getAuth()
+  const signout=async()=>{
+   try{
+    await signOut(auth)
+    console.log("logut succesful")
+   }catch(error){
+    console.log(error)
+   }
+  }
+
   return (
     <BrowserRouter> 
 
@@ -32,7 +44,7 @@ function App() {
              <li className='h-10 w-40'><Link className='flex gap-2 text-white items-center transition duration-150 ease-in-out hover:border-0 hover:rounded hover:bg-orange-500 hover:scale-105 ' to="/camera"><FaCamera size={20}/> Detecticon</Link></li>
              <li className='h-10 w-40'><Link className='flex gap-2 text-white items-center transition duration-150 ease-in-out hover:border-0 hover:rounded hover:bg-orange-500 hover:scale-105 ' to="/history"><FaHistory size={20}/> History</Link></li>
                <li className='h-10 w-40'><Link className='flex gap-2 text-white items-center transition duration-150 ease-in-out hover:border-0 hover:rounded hover:bg-orange-500 hover:scale-105 ' to="/signup"><FaUser size={20}/> Profile</Link></li>
-                <li className='h-10 w-40'><Link className='flex gap-2 text-white items-center transition duration-150 ease-in-out hover:border-0 hover:rounded hover:bg-orange-500 hover:scale-105 ' to="/settings"><FaCog size={20}/> setting</Link></li>
+                <li className='h-10 w-40'><button className='h-7 w-20 cursor-pointer text-white items-center transition duration-150 ease-in-out hover:border-0 hover:rounded hover:bg-orange-500 hover:scale-105' onClick={signout}>sign out</button></li>
         </ul>
         </div>
         <div className=' justify-center h-24 w-40 border-[1px] mr-1.5 border-orange-500'>

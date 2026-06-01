@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { db } from "./firebase";
 import Webcam from "react-webcam";
 import { push, ref } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 export default function Capture() {
 
@@ -186,8 +187,9 @@ useEffect(()=>{
   const savedata = async (currentdata) => {
 
     try {
-
-      await push(ref(db, "detections"), {
+const auth=getAuth();
+const user=auth.currentUser
+      await push(ref(db, `detections/${user.uid}`), {
         status: currentdata,
         time: new Date().toLocaleString(),
       });
